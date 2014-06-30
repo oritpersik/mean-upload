@@ -14,9 +14,11 @@ angular.module('mean.mean-upload').directive('meanUploadImg', function($upload) 
             $scope.onFileSelect = function($files) {
                 $scope.images = [];
                 $scope.files = $files;
+                var fileNames = [];
                 //$files: an array of files selected, each file has name, size, and type.
                 for (var i = 0; i < $files.length; i++) {
                     var file = $files[i];
+                    fileNames.push(file.name);
                     $scope.upload = $upload.upload({
                         url: 'meanUpload/upload',
                         headers: {
@@ -30,9 +32,15 @@ angular.module('mean.mean-upload').directive('meanUploadImg', function($upload) 
                         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     }).success(function(data, status, headers, config) {
                         if (data.success) {
+                            console.log(file.name);
                             $scope.images.push(data.img);
+                            
+                        }
+                        if ($scope.images.length === $files.length) {
                             if (angular.isDefined(attrs.uploadCallback)) {
-                                $scope.uploadCallback('test');
+                                $scope.uploadCallback({
+                                    files: fileNames
+                                });
                             }
                         }
                     });
