@@ -5,8 +5,8 @@ angular.module('mean.mean-upload').directive('meanUploadImg', function($upload) 
         templateUrl: 'mean-upload/views/upload.html',
         scope: {
             imgDest: '=',
-            uploadCallback: '&'
-
+            uploadCallback: '&',
+            uploadImgCallback: '&'
         },
         restrict: 'E',
         replace: true,
@@ -32,9 +32,12 @@ angular.module('mean.mean-upload').directive('meanUploadImg', function($upload) 
                         console.log('percent: ' + parseInt(100.0 * evt.loaded / evt.total));
                     }).success(function(data, status, headers, config) {
                         if (data.success) {
-                            console.log(file.name);
-                            $scope.images.push(data.img);
-                            
+                            if (angular.isDefined(attrs.uploadImgCallback)) {
+                                $scope.uploadImgCallback({
+                                    file: data.img.name
+                                });
+                            }
+                            $scope.images.push(data.img.src);
                         }
                         if ($scope.images.length === $files.length) {
                             if (angular.isDefined(attrs.uploadCallback)) {
