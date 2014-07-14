@@ -2,10 +2,12 @@
 
 // The Package is past automatically as first parameter
 module.exports = function(MeanUpload, app, auth, database) {
-    var multipart = require('connect-multiparty');
-    var multipartMiddleware = multipart();
-    var fs = require('fs');
-    var config = require('meanio').loadConfig();
+    var multipart = require('connect-multiparty'),
+        multipartMiddleware = multipart(),
+        fs = require('fs'),
+        config = require('meanio').loadConfig(),
+        mkdirOrig = fs.mkdir,
+        osSep = '/';
 
     app.post('/meanUpload/upload', multipartMiddleware, function(req, res) {
 
@@ -22,14 +24,38 @@ module.exports = function(MeanUpload, app, auth, database) {
                     });
             });
         }
-
         var path = config.root + req.body.dest;
         if (!fs.existsSync(path)) {
-            fs.mkdir(path, function() {
+            mkdir_p(path, function(err) {
                 rename();
             });
         } else {
             rename();
         }
     });
+
+    function mkdir_p(path, callback, position) {
+        var parts = require('path').normalize(path).split(osSep);
+
+        position = position || 0;
+
+        if (position >= parts.length) {
+            return callback();
+        }
+
+        var directory = parts.slice(0, position + 1).join(osSep) || osSep;
+        fs.stat(directory, function(err) {
+            if (err === null) {
+                mkdir_p(path, callback, position + 1);
+            } else {
+                mkdirOrig(directory, function(err) {
+                    if (err && err.code != 'EEXIST') {
+                        return callback(err);
+                    } else {
+                        mkdir_p(path, callback, position + 1);
+                    }
+                });
+            }
+        });
+    }
 };

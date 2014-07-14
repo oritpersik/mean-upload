@@ -1,3 +1,13 @@
-.meanUpload-example h1: {
-	background-color: purple
+#file_browse_wrapper {
+    width: 93px;
+    height: 28px;
+    background: gray;
+    border: none;
+    overflow: hidden;
+}
+#file_browse {
+    margin-left: -145px;
+    opacity: 0;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
+    filter: progid: DXImageTransform.Microsoft.Alpha(Opacity=0);
 }

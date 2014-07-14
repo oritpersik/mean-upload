@@ -24,6 +24,9 @@ MeanUpload.register(function(app, auth, database) {
     MeanUpload.aggregateAsset('js', '/packages/mean-upload/public/assets/lib/danialfarid-angular-file-upload/dist/angular-file-upload.min.js', {
         absolute: true
     });
+    MeanUpload.aggregateAsset('css', '/packages/mean-upload/public/assets/css/meanUpload.css', {
+        absolute: true
+    });
     MeanUpload.angularDependencies(['angularFileUpload']);
 
     return MeanUpload;
